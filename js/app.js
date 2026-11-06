@@ -3,6 +3,7 @@ class AlvaApp {
   constructor() {
     this.storageKey = "alva_business_planner_v1";
     this.authKey = "alva_auth_user_v1";
+    this.authMode = "login";
     this.state = this.loadState();
     this.currentUser = this.loadUser();
     this.engine = new AlvaFinanceEngine(this.state);
@@ -100,6 +101,19 @@ class AlvaApp {
         const email = document.getElementById("login-email").value.trim().toLowerCase();
         const pwd = document.getElementById("login-password").value.trim();
         this.handleLogin(email, pwd);
+      });
+    }
+
+    // Register Form Submit
+    const formRegister = document.getElementById("form-register");
+    if (formRegister) {
+      formRegister.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("reg-name").value.trim();
+        const email = document.getElementById("reg-email").value.trim().toLowerCase();
+        const role = document.getElementById("reg-role").value;
+        const pwd = document.getElementById("reg-password").value.trim();
+        this.handleRegister(name, email, role, pwd);
       });
     }
 
@@ -204,6 +218,7 @@ class AlvaApp {
     const modal = document.getElementById("login-modal");
     if (modal) {
       modal.classList.remove("hidden");
+      this.switchAuthMode("login");
       document.getElementById("login-email")?.focus();
     }
   }
@@ -211,6 +226,119 @@ class AlvaApp {
   closeLoginModal() {
     const modal = document.getElementById("login-modal");
     if (modal) modal.classList.add("hidden");
+  }
+
+  // Alternar entre aba de Login e aba de Cadastro
+  switchAuthMode(mode) {
+    this.authMode = mode;
+    const tabLogin = document.getElementById("auth-tab-login");
+    const tabRegister = document.getElementById("auth-tab-register");
+    const formLogin = document.getElementById("form-login");
+    const formRegister = document.getElementById("form-register");
+    const googleBtnText = document.getElementById("google-btn-text");
+
+    if (mode === "login") {
+      tabLogin?.classList.add("bg-white", "text-neutral-900", "shadow-2xs", "font-bold");
+      tabLogin?.classList.remove("text-neutral-500");
+      tabRegister?.classList.remove("bg-white", "text-neutral-900", "shadow-2xs", "font-bold");
+      tabRegister?.classList.add("text-neutral-500");
+
+      formLogin?.classList.remove("hidden");
+      formRegister?.classList.add("hidden");
+
+      if (googleBtnText) googleBtnText.textContent = "Continuar com o Google";
+    } else {
+      tabRegister?.classList.add("bg-white", "text-neutral-900", "shadow-2xs", "font-bold");
+      tabRegister?.classList.remove("text-neutral-500");
+      tabLogin?.classList.remove("bg-white", "text-neutral-900", "shadow-2xs", "font-bold");
+      tabLogin?.classList.add("text-neutral-500");
+
+      formLogin?.classList.add("hidden");
+      formRegister?.classList.remove("hidden");
+
+      if (googleBtnText) googleBtnText.textContent = "Cadastrar-se com o Google";
+    }
+  }
+
+  // Modal Seletor de Contas do Google
+  openGoogleChooser() {
+    const picker = document.getElementById("google-picker-modal");
+    if (picker) picker.classList.remove("hidden");
+  }
+
+  closeGoogleChooser() {
+    const picker = document.getElementById("google-picker-modal");
+    if (picker) picker.classList.add("hidden");
+  }
+
+  // Autenticação direta com uma conta Google selecionada
+  authenticateWithGoogle(name, email, initials, role = "Colaborador de Novos Negócios") {
+    let staffList = this.state.staff || ALVA_DEFAULT_DATA.staff;
+    let user = staffList.find(s => s.email.toLowerCase() === email.toLowerCase());
+
+    if (!user) {
+      // Cria a conta do Google na base da ALVA
+      user = {
+        id: "user-google-" + Date.now(),
+        name,
+        email,
+        role,
+        permission: "admin",
+        avatarInitials: initials || name.substring(0, 2).toUpperCase(),
+        badgeColor: "bg-rose-100 text-rose-800 border-rose-300",
+        provider: "google",
+        password: ""
+      };
+      if (!this.state.staff) this.state.staff = [...ALVA_DEFAULT_DATA.staff];
+      this.state.staff.push(user);
+      this.saveState();
+    }
+
+    this.closeGoogleChooser();
+    this.closeLoginModal();
+    this.saveUser(user);
+    this.switchView("planner");
+  }
+
+  // Prompt para o usuário digitar uma conta Google personalizada
+  promptCustomGoogleAccount() {
+    const name = prompt("Nome completo da sua Conta Google:", "Amanda Cristina");
+    if (!name) return;
+    const email = prompt("Endereço de e-mail do Google (Gmail / Workspace):", `${name.toLowerCase().replace(/\s+/g, '.')}@gmail.com`);
+    if (!email) return;
+
+    const initials = name.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase() || "GL";
+    this.authenticateWithGoogle(name, email, initials, "Diretoria de Novos Negócios");
+  }
+
+  // Cadastro por formulário tradicional
+  handleRegister(name, email, role, password) {
+    if (!this.state.staff) this.state.staff = [...ALVA_DEFAULT_DATA.staff];
+    const exists = this.state.staff.some(s => s.email.toLowerCase() === email.toLowerCase());
+    if (exists) {
+      alert("Este e-mail já possui cadastro. Alterne para a aba 'Entrar'.");
+      this.switchAuthMode("login");
+      return;
+    }
+
+    const initials = name.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase() || "AL";
+    const newUser = {
+      id: "user-" + Date.now(),
+      name,
+      email,
+      role,
+      permission: "admin",
+      avatarInitials: initials,
+      badgeColor: "bg-rose-100 text-rose-800 border-rose-300",
+      password
+    };
+
+    this.state.staff.push(newUser);
+    this.saveState();
+    this.saveUser(newUser);
+    this.closeLoginModal();
+    this.switchView("planner");
+    alert(`Conta criada com sucesso! Seja bem-vinda(o) à ALVA, ${name}!`);
   }
 
   handleLogin(email, password) {
@@ -222,7 +350,7 @@ class AlvaApp {
       this.closeLoginModal();
       this.switchView("planner");
     } else {
-      alert("Credenciais não reconhecidas. Utilize o atalho de acesso rápido de demonstração abaixo.");
+      alert("Credenciais não reconhecidas. Utilize o botão do Google ou o atalho de teste rápido abaixo.");
     }
   }
 
