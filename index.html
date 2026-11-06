@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALVA — Gestão Integrada de Finanças e Novos Negócios de Beleza</title>
+  
+  <!-- Fontes Google: Playfair Display + Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            rose: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              300: '#fda4af',
+              400: '#fb7185',
+              500: '#f43f5e',
+              600: '#e11d48',
+              700: '#be123c',
+              800: '#9f1239',
+              900: '#881337',
+              950: '#4c0519',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    @media print {
+      header, nav, #btn-export-json, #btn-reset-data, #file-import-label, #btn-print-report, #btn-add-product {
+        display: none !important;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .tab-content-panel {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-neutral-50/60 font-sans text-neutral-800 min-h-screen flex flex-col antialiased selection:bg-rose-100 selection:text-rose-900">
+
+  <!-- TOPO / HEADER -->
+  <header class="bg-white/90 backdrop-blur-md border-b border-neutral-200/80 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+        
+        <!-- Marca / Logo ALVA -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-950 via-rose-800 to-rose-600 text-white flex items-center justify-center font-serif font-bold text-xl shadow-sm tracking-wider">
+            A
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-serif font-bold text-xl tracking-tight text-neutral-900">ALVA</h1>
+              <span class="text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-800 border border-rose-200/80 px-2 py-0.5 rounded-full">
+                Beauty Business Engine
+              </span>
+            </div>
+            <p class="text-xs text-neutral-400 font-medium">Gestão Integrada de Finanças e Novos Negócios</p>
+          </div>
+        </div>
+
+        <!-- Seletor de Produto Ativo & Ação de Novo Produto -->
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-2 bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-1.5 shadow-2xs">
+            <span class="text-xs font-semibold text-neutral-500">Produto:</span>
+            <select id="active-product-select" class="bg-transparent text-xs font-bold text-neutral-900 focus:outline-none cursor-pointer">
+              <!-- Preenchido via app.js -->
+            </select>
+          </div>
+
+          <button id="btn-add-product" class="px-3.5 py-2 bg-rose-700 hover:bg-rose-800 text-white rounded-xl text-xs font-semibold shadow-xs transition flex items-center gap-1.5">
+            <i class="fas fa-plus text-[10px]"></i>
+            <span class="hidden md:inline">Novo Produto</span>
+          </button>
+
+          <!-- Dropdown/Ações de Dados -->
+          <div class="flex items-center gap-1 border-l border-neutral-200 pl-3">
+            <button id="btn-print-report" title="Imprimir Relatório Executivo / Salvar em PDF" class="w-8 h-8 rounded-lg text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center justify-center transition">
+              <i class="fas fa-print text-xs"></i>
+            </button>
+            <button id="btn-export-json" title="Exportar Backup JSON" class="w-8 h-8 rounded-lg text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center justify-center transition">
+              <i class="fas fa-download text-xs"></i>
+            </button>
+            <label id="file-import-label" title="Importar Backup JSON" class="w-8 h-8 rounded-lg text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center justify-center transition cursor-pointer">
+              <i class="fas fa-upload text-xs"></i>
+              <input type="file" id="file-import-json" accept=".json" class="hidden" />
+            </label>
+            <button id="btn-reset-data" title="Restaurar Dados Originais" class="w-8 h-8 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition">
+              <i class="fas fa-rotate-left text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Barra de Navegação por Abas -->
+      <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto py-2 border-t border-neutral-100 scrollbar-none">
+        <button data-nav-tab="overview" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-2 bg-rose-50 text-rose-950 border border-rose-300">
+          <i class="fas fa-chart-pie text-rose-600"></i> Visão Geral & KPIs
+        </button>
+        <button data-nav-tab="bom" class="px-3 sm:px-4 py-2 rounded-xl text-xs whitespace-nowrap transition flex items-center gap-2 text-neutral-600 hover:bg-neutral-50">
+          <i class="fas fa-wand-magic-sparkles text-neutral-500"></i> Lip Gloss & Ficha Técnica (BOM)
+        </button>
+        <button data-nav-tab="suppliers" class="px-3 sm:px-4 py-2 rounded-xl text-xs whitespace-nowrap transition flex items-center gap-2 text-neutral-600 hover:bg-neutral-50">
+          <i class="fas fa-industry text-neutral-500"></i> Fabricantes & Terceiristas
+        </button>
+        <button data-nav-tab="pricing" class="px-3 sm:px-4 py-2 rounded-xl text-xs whitespace-nowrap transition flex items-center gap-2 text-neutral-600 hover:bg-neutral-50">
+          <i class="fas fa-tags text-neutral-500"></i> Formação de Preço (Pricing)
+        </button>
+        <button data-nav-tab="financials" class="px-3 sm:px-4 py-2 rounded-xl text-xs whitespace-nowrap transition flex items-center gap-2 text-neutral-600 hover:bg-neutral-50">
+          <i class="fas fa-chart-line text-neutral-500"></i> Projeções & DRE (12M)
+        </button>
+        <button data-nav-tab="copilot" class="px-3 sm:px-4 py-2 rounded-xl text-xs whitespace-nowrap transition flex items-center gap-2 text-neutral-600 hover:bg-neutral-50">
+          <i class="fas fa-microchip text-neutral-500"></i> ALVA Copilot AI
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    
+    <!-- ABA 1: OVERVIEW -->
+    <section id="panel-overview" class="tab-content-panel">
+      <div id="overview-metrics-container">
+        <!-- Renderizado dinamicamente via app.js -->
+      </div>
+    </section>
+
+    <!-- ABA 2: BOM (PRODUTO & CUSTOS) -->
+    <section id="panel-bom" class="tab-content-panel hidden">
+      <!-- Renderizado dinamicamente via app.js -->
+    </section>
+
+    <!-- ABA 3: FORNECEDORES -->
+    <section id="panel-suppliers" class="tab-content-panel hidden">
+      <!-- Renderizado dinamicamente via app.js -->
+    </section>
+
+    <!-- ABA 4: PRICING -->
+    <section id="panel-pricing" class="tab-content-panel hidden">
+      <!-- Renderizado dinamicamente via app.js -->
+    </section>
+
+    <!-- ABA 5: FINANCIALS & DRE -->
+    <section id="panel-financials" class="tab-content-panel hidden">
+      <!-- Renderizado dinamicamente via app.js -->
+    </section>
+
+    <!-- ABA 6: COPILOT INTELIGENTE -->
+    <section id="panel-copilot" class="tab-content-panel hidden">
+      <!-- Renderizado dinamicamente via app.js -->
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="bg-white border-t border-neutral-200/80 py-6 text-xs text-neutral-500 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="font-serif font-bold text-neutral-900">ALVA</span> • Sistema Inteligente de P&D, Formação de Preço e Viabilidade Cosmética
+      </div>
+      <div class="flex items-center gap-4 text-neutral-400">
+        <span><i class="fas fa-shield-halved text-emerald-500 mr-1"></i> Dados salvos localmente</span>
+        <span>•</span>
+        <span>Preparado para múltiplos produtos</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts da Aplicação ALVA -->
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
