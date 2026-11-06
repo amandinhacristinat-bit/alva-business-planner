@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ALVA — Gestão Integrada de Finanças e Novos Negócios de Beleza</title>
+  <title>ALVA — Beleza Iluminada & Gestão Integrada de Negócios</title>
   
   <!-- Fontes Google: Playfair Display + Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,7 +48,7 @@
 
   <style>
     @media print {
-      header, nav, #btn-export-json, #btn-reset-data, #file-import-label, #btn-print-report, #btn-add-product {
+      header, nav, #btn-export-json, #btn-reset-data, #file-import-label, #btn-print-report, #btn-add-product, #login-modal, #user-profile-widget {
         display: none !important;
       }
       body {
@@ -63,68 +63,55 @@
 </head>
 <body class="bg-neutral-50/60 font-sans text-neutral-800 min-h-screen flex flex-col antialiased selection:bg-rose-100 selection:text-rose-900">
 
-  <!-- TOPO / HEADER -->
-  <header class="bg-white/90 backdrop-blur-md border-b border-neutral-200/80 sticky top-0 z-30 shadow-xs">
+  <!-- CABEÇALHO GLOBAL -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-neutral-200/80 sticky top-0 z-40 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 sm:h-20">
         
-        <!-- Marca / Logo ALVA -->
-        <div class="flex items-center gap-3">
+        <!-- Logo ALVA -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="alvaApp.switchView('landing')">
           <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-950 via-rose-800 to-rose-600 text-white flex items-center justify-center font-serif font-bold text-xl shadow-sm tracking-wider">
             A
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="font-serif font-bold text-xl tracking-tight text-neutral-900">ALVA</h1>
+              <span class="font-serif font-bold text-xl tracking-tight text-neutral-900">ALVA</span>
               <span class="text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-800 border border-rose-200/80 px-2 py-0.5 rounded-full">
-                Beauty Business Engine
+                Cosmetics & Lab
               </span>
             </div>
-            <p class="text-xs text-neutral-400 font-medium">Gestão Integrada de Finanças e Novos Negócios</p>
+            <p class="text-xs text-neutral-400 font-medium">Beleza Iluminada & Inteligência de Negócios</p>
           </div>
         </div>
 
-        <!-- Seletor de Produto Ativo & Ação de Novo Produto -->
-        <div class="flex items-center gap-3">
-          <div class="hidden sm:flex items-center gap-2 bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-1.5 shadow-2xs">
-            <span class="text-xs font-semibold text-neutral-500">Produto:</span>
-            <select id="active-product-select" class="bg-transparent text-xs font-bold text-neutral-900 focus:outline-none cursor-pointer">
-              <!-- Preenchido via app.js -->
-            </select>
-          </div>
-
-          <button id="btn-add-product" class="px-3.5 py-2 bg-rose-700 hover:bg-rose-800 text-white rounded-xl text-xs font-semibold shadow-xs transition flex items-center gap-1.5">
-            <i class="fas fa-plus text-[10px]"></i>
-            <span class="hidden md:inline">Novo Produto</span>
+        <!-- Navegação Principal: Institucional vs Gestão -->
+        <div class="flex items-center gap-2 sm:gap-4">
+          <button id="nav-btn-landing" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-rose-900 bg-rose-50 border border-rose-200 flex items-center gap-1.5">
+            <i class="fas fa-sparkles text-rose-600"></i>
+            <span class="hidden sm:inline">Apresentação da Marca</span>
+            <span class="sm:hidden">Sobre</span>
           </button>
 
-          <!-- Dropdown/Ações de Dados -->
-          <div class="flex items-center gap-1 border-l border-neutral-200 pl-3">
-            <button id="btn-print-report" title="Imprimir Relatório Executivo / Salvar em PDF" class="w-8 h-8 rounded-lg text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center justify-center transition">
-              <i class="fas fa-print text-xs"></i>
-            </button>
-            <button id="btn-export-json" title="Exportar Backup JSON" class="w-8 h-8 rounded-lg text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center justify-center transition">
-              <i class="fas fa-download text-xs"></i>
-            </button>
-            <label id="file-import-label" title="Importar Backup JSON" class="w-8 h-8 rounded-lg text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center justify-center transition cursor-pointer">
-              <i class="fas fa-upload text-xs"></i>
-              <input type="file" id="file-import-json" accept=".json" class="hidden" />
-            </label>
-            <button id="btn-reset-data" title="Restaurar Dados Originais" class="w-8 h-8 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition">
-              <i class="fas fa-rotate-left text-xs"></i>
-            </button>
+          <button id="nav-btn-planner" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 border border-transparent flex items-center gap-1.5">
+            <i class="fas fa-chart-line text-neutral-500"></i>
+            <span>Portal de Gestão & Finanças</span>
+          </button>
+
+          <!-- Widget de Autenticação / Login -->
+          <div id="auth-header-container" class="border-l border-neutral-200 pl-3 sm:pl-4">
+            <!-- Preenchido via app.js: Botão 'Entrar' ou Perfil Logado -->
           </div>
         </div>
 
       </div>
 
-      <!-- Barra de Navegação por Abas -->
-      <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto py-2 border-t border-neutral-100 scrollbar-none">
+      <!-- Barra de Abas do Painel Interno (Visível apenas quando na visão 'planner') -->
+      <nav id="planner-subnav" class="hidden flex space-x-1 sm:space-x-2 overflow-x-auto py-2 border-t border-neutral-100 scrollbar-none">
         <button data-nav-tab="overview" class="px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition flex items-center gap-2 bg-rose-50 text-rose-950 border border-rose-300">
           <i class="fas fa-chart-pie text-rose-600"></i> Visão Geral & KPIs
         </button>
         <button data-nav-tab="bom" class="px-3 sm:px-4 py-2 rounded-xl text-xs whitespace-nowrap transition flex items-center gap-2 text-neutral-600 hover:bg-neutral-50">
-          <i class="fas fa-wand-magic-sparkles text-neutral-500"></i> Lip Gloss & Ficha Técnica (BOM)
+          <i class="fas fa-wand-magic-sparkles text-neutral-500"></i> Lip Gloss & BOM
         </button>
         <button data-nav-tab="suppliers" class="px-3 sm:px-4 py-2 rounded-xl text-xs whitespace-nowrap transition flex items-center gap-2 text-neutral-600 hover:bg-neutral-50">
           <i class="fas fa-industry text-neutral-500"></i> Fabricantes & Terceiristas
@@ -142,58 +129,329 @@
     </div>
   </header>
 
-  <!-- CONTEÚDO PRINCIPAL -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+  <!-- ========================================== -->
+  <!-- 1. PÁGINA INSTITUCIONAL / APRESENTAÇÃO ALVA -->
+  <!-- ========================================== -->
+  <div id="view-landing" class="flex-1">
     
-    <!-- ABA 1: OVERVIEW -->
-    <section id="panel-overview" class="tab-content-panel">
-      <div id="overview-metrics-container">
-        <!-- Renderizado dinamicamente via app.js -->
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-rose-50/50 via-white to-white py-16 sm:py-24 border-b border-rose-100/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center max-w-3xl mx-auto">
+          <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-rose-100/70 text-rose-900 border border-rose-200 mb-6">
+            <i class="fas fa-certificate text-rose-600"></i> Cosméticos Limpos • Biotecnologia Labial • Cruelty-Free
+          </span>
+          <h1 class="text-4xl sm:text-6xl font-serif font-bold text-neutral-900 tracking-tight leading-tight">
+            A luminosidade pura em sua forma mais nobre.
+          </h1>
+          <p class="mt-6 text-base sm:text-lg text-neutral-600 leading-relaxed font-light">
+            A <strong>ALVA</strong> nasce para unir a sofisticação da alta perfumaria com o rigor dermatológico. Nosso primeiro lançamento traz uma trilogia de lip glosses com ácido hialurônico de alta permeação, textura ultraconfortável e sensorial espelhado sem grudar.
+          </p>
+
+          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="#colecao-lipgloss" class="w-full sm:w-auto px-8 py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl text-sm font-semibold shadow-md transition flex items-center justify-center gap-2">
+              Conhecer a Coleção Triplo Glow <i class="fas fa-arrow-down text-xs"></i>
+            </a>
+            <button onclick="alvaApp.switchView('planner')" class="w-full sm:w-auto px-8 py-3.5 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-sm font-semibold shadow-md transition flex items-center justify-center gap-2">
+              <i class="fas fa-lock text-xs"></i> Acessar Portal de Gestão Interna
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detalhes de Fundo Suave -->
+      <div class="absolute -top-24 -left-24 w-96 h-96 bg-rose-200/30 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute top-1/2 -right-24 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none"></div>
+    </section>
+
+    <!-- Apresentação do Produto Inicial: Trilogia Lip Gloss 3 Cores -->
+    <section id="colecao-lipgloss" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-bold tracking-widest text-rose-700 uppercase">Coleção de Estreia</span>
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-neutral-900 mt-2">ALVA Glaze — Trilogia de Cores</h2>
+        <p class="text-sm text-neutral-500 mt-3">
+          Três tonalidades estrategicamente desenvolvidas para atender desde o dia a dia minimalista até produções de alto impacto.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Cor 01 -->
+        <div class="bg-white rounded-3xl p-8 border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="w-16 h-16 rounded-2xl shadow-inner border border-neutral-200 flex items-center justify-center mb-6 relative overflow-hidden" style="background-color: #F5E6E8">
+              <div class="w-8 h-8 rounded-full bg-white/70 blur-xs"></div>
+            </div>
+            <span class="text-xs font-mono font-bold text-rose-800 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+              SKU: ALVA-LG-01
+            </span>
+            <h3 class="text-2xl font-serif font-bold text-neutral-900 mt-3">Cristal Glow #01</h3>
+            <p class="text-xs text-neutral-400 font-medium mb-3">Aroma: Baunilha Nobre • 4.5 ml</p>
+            <p class="text-xs text-neutral-600 leading-relaxed">
+              O brilho diamante atemporal. Fórmula translúcida enriquecida com micropartículas refletoras peroladas que destacam o tom natural dos lábios com acabamento espelhado molhado.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
+            <span class="text-neutral-500">Efeito: <strong class="text-neutral-800">Luminosidade Pura</strong></span>
+            <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Efeito Plump</span>
+          </div>
+        </div>
+
+        <!-- Cor 02 -->
+        <div class="bg-white rounded-3xl p-8 border-2 border-rose-300 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative group">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-rose-700 text-white text-[10px] uppercase font-bold tracking-wider px-3.5 py-1 rounded-full shadow-sm">
+            Carro-Chefe Previsto (45% do Mix)
+          </div>
+          <div>
+            <div class="w-16 h-16 rounded-2xl shadow-inner border border-neutral-200 flex items-center justify-center mb-6 relative overflow-hidden" style="background-color: #D98E85">
+              <div class="w-8 h-8 rounded-full bg-white/40 blur-xs"></div>
+            </div>
+            <span class="text-xs font-mono font-bold text-rose-800 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+              SKU: ALVA-LG-02
+            </span>
+            <h3 class="text-2xl font-serif font-bold text-neutral-900 mt-3">Nude Velvet #02</h3>
+            <p class="text-xs text-neutral-400 font-medium mb-3">Aroma: Pêssego & Caramelo • 4.5 ml</p>
+            <p class="text-xs text-neutral-600 leading-relaxed">
+              O equilíbrio absoluto da sofisticação. Nude rosado quente com cobertura média, desenhado para harmonizar com todos os subtons de pele sem pesar.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
+            <span class="text-neutral-500">Efeito: <strong class="text-neutral-800">Cobertura Sofisticada</strong></span>
+            <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Best-seller</span>
+          </div>
+        </div>
+
+        <!-- Cor 03 -->
+        <div class="bg-white rounded-3xl p-8 border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <div class="w-16 h-16 rounded-2xl shadow-inner border border-neutral-200 flex items-center justify-center mb-6 relative overflow-hidden" style="background-color: #9B3855">
+              <div class="w-8 h-8 rounded-full bg-white/30 blur-xs"></div>
+            </div>
+            <span class="text-xs font-mono font-bold text-rose-800 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+              SKU: ALVA-LG-03
+            </span>
+            <h3 class="text-2xl font-serif font-bold text-neutral-900 mt-3">Berry Bloom #03</h3>
+            <p class="text-xs text-neutral-400 font-medium mb-3">Aroma: Frutas Vermelhas Silvestres • 4.5 ml</p>
+            <p class="text-xs text-neutral-600 leading-relaxed">
+              A elegância marcante do amora. Proporciona um efeito tint saudável, com pigmentos que se fundem aos lábios, conferindo profundidade e volume imediato.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
+            <span class="text-neutral-500">Efeito: <strong class="text-neutral-800">Tint & Plump Intenso</strong></span>
+            <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Alta Pigmentação</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ABA 2: BOM (PRODUTO & CUSTOS) -->
-    <section id="panel-bom" class="tab-content-panel hidden">
-      <!-- Renderizado dinamicamente via app.js -->
+    <!-- Pilares da Marca -->
+    <section class="bg-neutral-900 text-white py-16 sm:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <span class="text-xs font-bold tracking-widest text-rose-400 uppercase">Nosso Compromisso</span>
+          <h2 class="text-3xl font-serif font-bold text-white mt-2">Dermatologia, Ética & Sensorial</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-neutral-300 text-xs">
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <div class="w-10 h-10 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center text-lg mb-4">
+              <i class="fas fa-droplet"></i>
+            </div>
+            <h3 class="text-white font-bold text-sm mb-2">Ácido Hialurônico</h3>
+            <p class="leading-relaxed">Microesferas de preenchimento que retêm até 1.000 vezes seu peso em água, garantindo lábios hidratados por 24 horas.</p>
+          </div>
+
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <div class="w-10 h-10 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center text-lg mb-4">
+              <i class="fas fa-paw"></i>
+            </div>
+            <h3 class="text-white font-bold text-sm mb-2">100% Cruelty-Free</h3>
+            <p class="leading-relaxed">Nenhum teste em animais em qualquer etapa da cadeia de P&D, com fornecedores certificados e homologados.</p>
+          </div>
+
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <div class="w-10 h-10 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center text-lg mb-4">
+              <i class="fas fa-shield-virus"></i>
+            </div>
+            <h3 class="text-white font-bold text-sm mb-2">Segurança ANVISA</h3>
+            <p class="leading-relaxed">Formulado em laboratórios parceiros com certificação Grau 2, testes de eficácia dérmica e estabilidade acelerada.</p>
+          </div>
+
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <div class="w-10 h-10 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center text-lg mb-4">
+              <i class="fas fa-scale-balanced"></i>
+            </div>
+            <h3 class="text-white font-bold text-sm mb-2">Transparência de Custos</h3>
+            <p class="leading-relaxed">Gestão industrial inteligente para oferecer o máximo de luxo sensorial por um preço justo e sustentável.</p>
+          </div>
+        </div>
+
+        <div class="mt-16 text-center">
+          <button onclick="alvaApp.openLoginModal()" class="px-8 py-3.5 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl text-xs font-semibold tracking-wider uppercase transition shadow-lg inline-flex items-center gap-2">
+            <i class="fas fa-user-lock"></i> Acesso Restrito aos Colaboradores da ALVA
+          </button>
+        </div>
+      </div>
     </section>
 
-    <!-- ABA 3: FORNECEDORES -->
-    <section id="panel-suppliers" class="tab-content-panel hidden">
-      <!-- Renderizado dinamicamente via app.js -->
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. PORTAL DE GESTÃO INTERNA (BUSINESS PLANNER) -->
+  <!-- ========================================== -->
+  <div id="view-planner" class="hidden flex-1 flex flex-col">
+    
+    <!-- Barra de Ferramentas do Produto e Controles -->
+    <section class="bg-white border-b border-neutral-200/80 py-3">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-semibold text-neutral-500">Produto Ativo:</span>
+          <select id="active-product-select" class="bg-neutral-50 border border-neutral-200 text-xs font-bold text-neutral-900 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-rose-500">
+            <!-- Preenchido via app.js -->
+          </select>
+          <button id="btn-add-product" class="px-3 py-1.5 bg-rose-700 hover:bg-rose-800 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-xs">
+            <i class="fas fa-plus text-[10px]"></i> Novo Produto
+          </button>
+        </div>
+
+        <!-- Botões de Ações de Gestão -->
+        <div class="flex items-center gap-1.5 self-end sm:self-auto">
+          <button id="btn-print-report" title="Imprimir Relatório Executivo / Salvar em PDF" class="px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 border border-neutral-200 flex items-center gap-1.5 transition">
+            <i class="fas fa-print"></i> Relatório PDF
+          </button>
+          <button id="btn-export-json" title="Exportar Backup JSON" class="px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 border border-neutral-200 flex items-center gap-1.5 transition">
+            <i class="fas fa-download"></i> Backup JSON
+          </button>
+          <label id="file-import-label" title="Importar Backup JSON" class="px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 border border-neutral-200 flex items-center gap-1.5 transition cursor-pointer">
+            <i class="fas fa-upload"></i> Importar
+            <input type="file" id="file-import-json" accept=".json" class="hidden" />
+          </label>
+          <button id="btn-reset-data" title="Restaurar Dados Originais" class="p-1.5 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 transition">
+            <i class="fas fa-rotate-left text-xs"></i>
+          </button>
+        </div>
+      </div>
     </section>
 
-    <!-- ABA 4: PRICING -->
-    <section id="panel-pricing" class="tab-content-panel hidden">
-      <!-- Renderizado dinamicamente via app.js -->
-    </section>
+    <!-- Conteúdo das Abas Internas -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <!-- ABA 1: OVERVIEW -->
+      <section id="panel-overview" class="tab-content-panel">
+        <div id="overview-metrics-container"></div>
+      </section>
 
-    <!-- ABA 5: FINANCIALS & DRE -->
-    <section id="panel-financials" class="tab-content-panel hidden">
-      <!-- Renderizado dinamicamente via app.js -->
-    </section>
+      <!-- ABA 2: BOM (PRODUTO & CUSTOS) -->
+      <section id="panel-bom" class="tab-content-panel hidden"></section>
 
-    <!-- ABA 6: COPILOT INTELIGENTE -->
-    <section id="panel-copilot" class="tab-content-panel hidden">
-      <!-- Renderizado dinamicamente via app.js -->
-    </section>
+      <!-- ABA 3: FORNECEDORES -->
+      <section id="panel-suppliers" class="tab-content-panel hidden"></section>
 
-  </main>
+      <!-- ABA 4: PRICING -->
+      <section id="panel-pricing" class="tab-content-panel hidden"></section>
 
-  <!-- RODAPÉ -->
-  <footer class="bg-white border-t border-neutral-200/80 py-6 text-xs text-neutral-500 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <!-- ABA 5: FINANCIALS & DRE -->
+      <section id="panel-financials" class="tab-content-panel hidden"></section>
+
+      <!-- ABA 6: COPILOT INTELIGENTE -->
+      <section id="panel-copilot" class="tab-content-panel hidden"></section>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL DE LOGIN DO FUNCIONÁRIO / COLABORADOR -->
+  <!-- ========================================== -->
+  <div id="login-modal" class="fixed inset-0 z-50 bg-neutral-950/70 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-neutral-100 relative">
+      <button onclick="alvaApp.closeLoginModal()" class="absolute top-5 right-5 text-neutral-400 hover:text-neutral-600 transition">
+        <i class="fas fa-times text-base"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-950 to-rose-600 text-white flex items-center justify-center font-serif font-bold text-2xl mx-auto shadow-md mb-3">
+          A
+        </div>
+        <h3 class="text-2xl font-serif font-bold text-neutral-900">Portal Interno ALVA</h3>
+        <p class="text-xs text-neutral-500 mt-1">Identifique-se com sua conta de colaborador para gerenciar finanças e P&D</p>
+      </div>
+
+      <!-- Formulário de Login -->
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1">E-mail Corporativo</label>
+          <input type="email" id="login-email" required placeholder="ex: amanda@alvabeauty.com.br"
+            class="w-full bg-neutral-50 border border-neutral-300 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:ring-2 focus:ring-rose-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1">Senha</label>
+          <input type="password" id="login-password" required placeholder="••••••••"
+            class="w-full bg-neutral-50 border border-neutral-300 rounded-xl px-3.5 py-2.5 text-xs text-neutral-900 focus:ring-2 focus:ring-rose-500 focus:outline-none" />
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
+          <i class="fas fa-arrow-right-to-bracket"></i> Acessar Sistema
+        </button>
+      </form>
+
+      <!-- Acesso Rápido de Demonstração (1 Clique) -->
+      <div class="mt-6 pt-5 border-t border-neutral-100">
+        <span class="block text-[11px] font-semibold uppercase tracking-wider text-neutral-400 text-center mb-3">
+          Acesso Rápido para Demonstração:
+        </span>
+        <div class="space-y-2">
+          <button type="button" onclick="alvaApp.quickLogin('user-1')" class="w-full p-2.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100/60 text-left transition flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-rose-700 text-white font-bold flex items-center justify-center text-[11px]">AC</span>
+              <div>
+                <strong class="text-neutral-900 block leading-tight">Amanda Cristina</strong>
+                <span class="text-[10px] text-neutral-500">Fundadora & Novos Negócios</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-bold text-rose-800 uppercase">Entrar <i class="fas fa-chevron-right text-[9px]"></i></span>
+          </button>
+
+          <button type="button" onclick="alvaApp.quickLogin('user-2')" class="w-full p-2.5 rounded-xl border border-neutral-200 bg-neutral-50 hover:bg-neutral-100 text-left transition flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-indigo-700 text-white font-bold flex items-center justify-center text-[11px]">CE</span>
+              <div>
+                <strong class="text-neutral-900 block leading-tight">Carlos Eduardo</strong>
+                <span class="text-[10px] text-neutral-500">Finanças & Controladoria</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-bold text-neutral-700 uppercase">Entrar <i class="fas fa-chevron-right text-[9px]"></i></span>
+          </button>
+
+          <button type="button" onclick="alvaApp.quickLogin('user-3')" class="w-full p-2.5 rounded-xl border border-neutral-200 bg-neutral-50 hover:bg-neutral-100 text-left transition flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-emerald-700 text-white font-bold flex items-center justify-center text-[11px]">SV</span>
+              <div>
+                <strong class="text-neutral-900 block leading-tight">Dra. Sofia Vasconcelos</strong>
+                <span class="text-[10px] text-neutral-500">P&D & Regulatório ANVISA</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-bold text-neutral-700 uppercase">Entrar <i class="fas fa-chevron-right text-[9px]"></i></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RODAPÉ GLOBAL -->
+  <footer class="bg-white border-t border-neutral-200/80 py-8 text-xs text-neutral-500 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
-        <span class="font-serif font-bold text-neutral-900">ALVA</span> • Sistema Inteligente de P&D, Formação de Preço e Viabilidade Cosmética
+        <span class="font-serif font-bold text-neutral-900 text-sm">ALVA</span> • Beleza em Essência, Gestão em Alta Performance
       </div>
       <div class="flex items-center gap-4 text-neutral-400">
-        <span><i class="fas fa-shield-halved text-emerald-500 mr-1"></i> Dados salvos localmente</span>
+        <span><i class="fas fa-shield-halved text-emerald-500 mr-1"></i> Dados protegidos e salvos localmente</span>
         <span>•</span>
-        <span>Preparado para múltiplos produtos</span>
+        <button onclick="alvaApp.switchView('landing')" class="hover:text-neutral-700 underline">Apresentação</button>
+        <span>•</span>
+        <button onclick="alvaApp.switchView('planner')" class="hover:text-neutral-700 underline">Portal do Colaborador</button>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts da Aplicação ALVA -->
+  <!-- Scripts ALVA -->
   <script src="js/data.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/app.js"></script>

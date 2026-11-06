@@ -2,7 +2,8 @@
 const ALVA_DEFAULT_DATA = {
   company: {
     name: "ALVA",
-    tagline: "Gestão Integrada de Finanças e Novos Negócios",
+    tagline: "Beleza Iluminada & Gestão Inteligente",
+    mission: "Criar cosméticos de alta performance com formulações limpas, sensoriais nobres e transparência de custos do laboratório até a consumidora final.",
     segment: "Cosméticos & Beleza Premium",
     currency: "BRL",
     taxRegime: "Simples Nacional (Comércio - Faixa 1)",
@@ -10,6 +11,39 @@ const ALVA_DEFAULT_DATA = {
     fixedMonthlyCosts: 3500.0, // Aluguel/software/marketing institucional
     availableCapital: 35000.0 // Capital de giro inicial disponível
   },
+  // Equipe / Funcionários Cadastrados para Acesso ao Sistema
+  staff: [
+    {
+      id: "user-1",
+      name: "Amanda Cristina",
+      email: "amanda@alvabeauty.com.br",
+      role: "Fundadora & Head de Novos Negócios",
+      permission: "admin",
+      avatarInitials: "AC",
+      badgeColor: "bg-rose-100 text-rose-800 border-rose-300",
+      password: "alva"
+    },
+    {
+      id: "user-2",
+      name: "Carlos Eduardo",
+      email: "carlos.financas@alvabeauty.com.br",
+      role: "Analista Financeiro & Controladoria",
+      permission: "finance",
+      avatarInitials: "CE",
+      badgeColor: "bg-indigo-100 text-indigo-800 border-indigo-300",
+      password: "alva"
+    },
+    {
+      id: "user-3",
+      name: "Dra. Sofia Vasconcelos",
+      email: "sofia.pd@alvabeauty.com.br",
+      role: "Especialista em P&D e Regulatório ANVISA",
+      permission: "rnd",
+      avatarInitials: "SV",
+      badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
+      password: "alva"
+    }
+  ],
   products: [
     {
       id: "prod-lipgloss-01",
@@ -82,12 +116,12 @@ const ALVA_DEFAULT_DATA = {
           icon: "shopping-bag",
           active: true,
           targetPrice: 59.90,
-          expectedSalesShare: 50, // 50% das vendas
-          taxPercent: 6.0, // Simples Nacional
-          gatewayPercent: 3.8, // Cartão / Pix gateway
-          shippingPackagingCost: 4.50, // Caixinha personalizada e brinde
-          marketingCacEstimate: 12.00, // Custo de Aquisição por Venda (Mídia Paga)
-          platformFeePercent: 0.0 // Shopify / Nuvemshop mensal rateado
+          expectedSalesShare: 50,
+          taxPercent: 6.0,
+          gatewayPercent: 3.8,
+          shippingPackagingCost: 4.50,
+          marketingCacEstimate: 12.00,
+          platformFeePercent: 0.0
         },
         {
           id: "channel-marketplace",
@@ -95,24 +129,24 @@ const ALVA_DEFAULT_DATA = {
           icon: "store",
           active: true,
           targetPrice: 64.90,
-          expectedSalesShare: 30, // 30% das vendas
+          expectedSalesShare: 30,
           taxPercent: 6.0,
-          gatewayPercent: 0.0, // Já incluído na comissão do canal
-          shippingPackagingCost: 3.50, // Embalagem padrão correios
-          marketingCacEstimate: 0.0, // Tráfego orgânico do marketplace
-          platformFeePercent: 18.0 // Comissão média marketplace
+          gatewayPercent: 0.0,
+          shippingPackagingCost: 3.50,
+          marketingCacEstimate: 0.0,
+          platformFeePercent: 18.0
         },
         {
           id: "channel-b2b",
           name: "Atacado / Salões de Beleza / Boutiques (B2B)",
           icon: "truck",
           active: true,
-          targetPrice: 32.90, // Desconto comercial de atacado (~45% do PVS)
-          expectedSalesShare: 20, // 20% das vendas
+          targetPrice: 32.90,
+          expectedSalesShare: 20,
           taxPercent: 6.0,
-          gatewayPercent: 1.5, // Boleto bancário
-          shippingPackagingCost: 0.80, // Caixa coletiva
-          marketingCacEstimate: 2.00, // Comissão comercial de representante
+          gatewayPercent: 1.5,
+          shippingPackagingCost: 0.80,
+          marketingCacEstimate: 2.00,
           platformFeePercent: 0.0
         }
       ],
@@ -128,7 +162,7 @@ const ALVA_DEFAULT_DATA = {
           leadTimeDays: 45,
           unitCostFull: 9.80,
           paymentTerms: "40% pedido / 30% embarque / 30% 30 DDL",
-          qualityRating: 5, // 1 to 5
+          qualityRating: 5,
           recommended: true,
           notes: "Laboratório conceituado, formulação premiada com sensorial aveludado e estabilidade garantida."
         },

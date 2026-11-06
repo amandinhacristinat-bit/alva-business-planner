@@ -2,8 +2,11 @@
 class AlvaApp {
   constructor() {
     this.storageKey = "alva_business_planner_v1";
+    this.authKey = "alva_auth_user_v1";
     this.state = this.loadState();
+    this.currentUser = this.loadUser();
     this.engine = new AlvaFinanceEngine(this.state);
+    this.currentView = this.currentUser ? "planner" : "landing";
     this.currentTab = "overview";
     this.selectedProductId = this.state.products[0]?.id || null;
     this.selectedScenario = "realistic";
@@ -33,6 +36,28 @@ class AlvaApp {
     this.engine = new AlvaFinanceEngine(this.state);
   }
 
+  loadUser() {
+    try {
+      const saved = localStorage.getItem(this.authKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.warn("Erro ao carregar usuário autenticado:", e);
+    }
+    return null;
+  }
+
+  saveUser(user) {
+    this.currentUser = user;
+    if (user) {
+      localStorage.setItem(this.authKey, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(this.authKey);
+    }
+    this.renderAuthHeader();
+  }
+
   resetState() {
     if (confirm("Tem certeza que deseja restaurar as configurações originais da ALVA? Todas as alterações manuais serão resetadas.")) {
       this.state = JSON.parse(JSON.stringify(ALVA_DEFAULT_DATA));
@@ -43,17 +68,40 @@ class AlvaApp {
 
   init() {
     this.bindEvents();
-    this.render();
+    this.renderAuthHeader();
+    this.switchView(this.currentView);
   }
 
   bindEvents() {
-    // Abas de navegação
+    // Botões de alternância de visão (Landing vs Planner)
+    const btnLanding = document.getElementById("nav-btn-landing");
+    if (btnLanding) {
+      btnLanding.addEventListener("click", () => this.switchView("landing"));
+    }
+
+    const btnPlanner = document.getElementById("nav-btn-planner");
+    if (btnPlanner) {
+      btnPlanner.addEventListener("click", () => this.switchView("planner"));
+    }
+
+    // Abas de navegação do Planner
     document.querySelectorAll("[data-nav-tab]").forEach(btn => {
       btn.addEventListener("click", (e) => {
         const tab = e.currentTarget.getAttribute("data-nav-tab");
         this.switchTab(tab);
       });
     });
+
+    // Login Form Submit
+    const formLogin = document.getElementById("form-login");
+    if (formLogin) {
+      formLogin.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("login-email").value.trim().toLowerCase();
+        const pwd = document.getElementById("login-password").value.trim();
+        this.handleLogin(email, pwd);
+      });
+    }
 
     // Seletor de cenário
     const scenarioSelect = document.getElementById("scenario-selector");
@@ -82,6 +130,115 @@ class AlvaApp {
 
     const btnAddProduct = document.getElementById("btn-add-product");
     if (btnAddProduct) btnAddProduct.addEventListener("click", () => this.openNewProductModal());
+  }
+
+  // Alternar entre a Apresentação Pública (Landing) e o Gestor Interno (Planner)
+  switchView(view) {
+    this.currentView = view;
+    const viewLanding = document.getElementById("view-landing");
+    const viewPlanner = document.getElementById("view-planner");
+    const plannerSubnav = document.getElementById("planner-subnav");
+    const btnLanding = document.getElementById("nav-btn-landing");
+    const btnPlanner = document.getElementById("nav-btn-planner");
+
+    if (view === "landing") {
+      viewLanding?.classList.remove("hidden");
+      viewPlanner?.classList.add("hidden");
+      plannerSubnav?.classList.add("hidden");
+
+      btnLanding?.classList.add("text-rose-900", "bg-rose-50", "border-rose-200");
+      btnLanding?.classList.remove("text-neutral-600", "hover:bg-neutral-100");
+      btnPlanner?.classList.remove("text-rose-900", "bg-rose-50", "border-rose-200");
+      btnPlanner?.classList.add("text-neutral-600", "hover:bg-neutral-100");
+    } else {
+      // Se tentar acessar o planner sem estar logado, avisa com carinho
+      if (!this.currentUser) {
+        this.openLoginModal();
+        return;
+      }
+
+      viewLanding?.classList.add("hidden");
+      viewPlanner?.classList.remove("hidden");
+      plannerSubnav?.classList.remove("hidden");
+
+      btnPlanner?.classList.add("text-rose-900", "bg-rose-50", "border-rose-200");
+      btnPlanner?.classList.remove("text-neutral-600", "hover:bg-neutral-100");
+      btnLanding?.classList.remove("text-rose-900", "bg-rose-50", "border-rose-200");
+      btnLanding?.classList.add("text-neutral-600", "hover:bg-neutral-100");
+
+      this.render();
+    }
+  }
+
+  // Render do Widget de Autenticação no Cabeçalho
+  renderAuthHeader() {
+    const container = document.getElementById("auth-header-container");
+    if (!container) return;
+
+    if (this.currentUser) {
+      container.innerHTML = `
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-rose-700 text-white font-bold flex items-center justify-center text-xs shadow-xs" title="${this.currentUser.role}">
+            ${this.currentUser.avatarInitials || 'AL'}
+          </div>
+          <div class="hidden md:block text-left">
+            <span class="block text-xs font-bold text-neutral-900 leading-tight">${this.currentUser.name}</span>
+            <span class="block text-[10px] text-neutral-500 font-medium">${this.currentUser.role}</span>
+          </div>
+          <button onclick="alvaApp.logout()" title="Encerrar Sessão" class="w-7 h-7 rounded-lg text-neutral-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition ml-1">
+            <i class="fas fa-arrow-right-from-bracket text-xs"></i>
+          </button>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `
+        <button onclick="alvaApp.openLoginModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-neutral-900 hover:bg-neutral-800 text-white shadow-xs transition flex items-center gap-1.5">
+          <i class="fas fa-lock text-[10px]"></i>
+          <span>Entrar</span>
+        </button>
+      `;
+    }
+  }
+
+  openLoginModal() {
+    const modal = document.getElementById("login-modal");
+    if (modal) {
+      modal.classList.remove("hidden");
+      document.getElementById("login-email")?.focus();
+    }
+  }
+
+  closeLoginModal() {
+    const modal = document.getElementById("login-modal");
+    if (modal) modal.classList.add("hidden");
+  }
+
+  handleLogin(email, password) {
+    const staffList = this.state.staff || ALVA_DEFAULT_DATA.staff;
+    const user = staffList.find(s => s.email.toLowerCase() === email);
+
+    if (user && (user.password === password || password === "alva" || password.length >= 3)) {
+      this.saveUser(user);
+      this.closeLoginModal();
+      this.switchView("planner");
+    } else {
+      alert("Credenciais não reconhecidas. Utilize o atalho de acesso rápido de demonstração abaixo.");
+    }
+  }
+
+  quickLogin(userId) {
+    const staffList = this.state.staff || ALVA_DEFAULT_DATA.staff;
+    const user = staffList.find(s => s.id === userId) || staffList[0];
+    this.saveUser(user);
+    this.closeLoginModal();
+    this.switchView("planner");
+  }
+
+  logout() {
+    if (confirm("Deseja sair da sua sessão no portal interno ALVA?")) {
+      this.saveUser(null);
+      this.switchView("landing");
+    }
   }
 
   switchTab(tab) {
@@ -176,7 +333,7 @@ class AlvaApp {
     container.innerHTML = `
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- Card 1: Custo Unitário -->
-        <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm hover:shadow-md transition">
+        <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-xs hover:shadow-md transition">
           <div class="flex items-center justify-between text-neutral-500 mb-2">
             <span class="text-xs font-medium uppercase tracking-wider">Custo Unitário Total</span>
             <div class="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center">
@@ -191,7 +348,7 @@ class AlvaApp {
         </div>
 
         <!-- Card 2: Preço Médio & Margem -->
-        <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm hover:shadow-md transition">
+        <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-xs hover:shadow-md transition">
           <div class="flex items-center justify-between text-neutral-500 mb-2">
             <span class="text-xs font-medium uppercase tracking-wider">Margem Média Ponderada</span>
             <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -205,7 +362,7 @@ class AlvaApp {
         </div>
 
         <!-- Card 3: Investimento 1º Lote -->
-        <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm hover:shadow-md transition">
+        <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-xs hover:shadow-md transition">
           <div class="flex items-center justify-between text-neutral-500 mb-2">
             <span class="text-xs font-medium uppercase tracking-wider">Investimento 1º Lote</span>
             <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
@@ -219,7 +376,7 @@ class AlvaApp {
         </div>
 
         <!-- Card 4: Ponto de Equilíbrio (Break-Even) -->
-        <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-sm hover:shadow-md transition">
+        <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-xs hover:shadow-md transition">
           <div class="flex items-center justify-between text-neutral-500 mb-2">
             <span class="text-xs font-medium uppercase tracking-wider">Break-Even Operacional</span>
             <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -234,7 +391,7 @@ class AlvaApp {
       </div>
 
       <!-- Seção das 3 Cores do Lip Gloss -->
-      <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm mb-6">
+      <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs mb-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
           <div>
             <h3 class="text-lg font-serif font-bold text-neutral-900">Coleção Inicial: Lip Gloss 3 Tons</h3>
@@ -286,7 +443,7 @@ class AlvaApp {
       <!-- Gráfico e Diagnóstico Rápido -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Gráfico de Comparação de Canais -->
-        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm">
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs">
           <div class="flex justify-between items-center mb-4">
             <div>
               <h3 class="font-bold text-neutral-900">Formação de Preço & Margem por Canal</h3>
@@ -302,7 +459,7 @@ class AlvaApp {
         </div>
 
         <!-- Copilot Insights Widget -->
-        <div class="bg-gradient-to-br from-rose-950 to-neutral-900 text-white rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+        <div class="bg-gradient-to-br from-rose-950 to-neutral-900 text-white rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div>
             <div class="flex items-center gap-2 mb-3 text-rose-300">
               <i class="fas fa-wand-magic-sparkles text-sm"></i>
@@ -335,7 +492,6 @@ class AlvaApp {
     }
 
     const labels = pricing.channels.map(c => c.name);
-    const prices = pricing.channels.map(c => c.price);
     const margins = pricing.channels.map(c => c.contributionMarginBrl);
     const costs = pricing.channels.map(c => c.totalVariableCost);
 
@@ -347,7 +503,7 @@ class AlvaApp {
           {
             label: "Margem de Contribuição (R$)",
             data: margins,
-            backgroundColor: "#BE123C", // Rose-700
+            backgroundColor: "#BE123C",
             borderRadius: 6
           },
           {
@@ -385,7 +541,7 @@ class AlvaApp {
     container.innerHTML = `
       <div class="space-y-6">
         <!-- Cabeçalho do Produto e Ajuste de Lote -->
-        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <div class="flex items-center gap-2 mb-1">
               <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
@@ -397,7 +553,6 @@ class AlvaApp {
             <p class="text-sm text-neutral-500 mt-1">${product.description}</p>
           </div>
 
-          <!-- Input do Lote Planejado -->
           <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-3.5 flex items-center gap-4">
             <div>
               <label class="block text-xs font-semibold text-neutral-700 uppercase tracking-wider mb-1">Lote Planejado</label>
@@ -414,7 +569,7 @@ class AlvaApp {
         </div>
 
         <!-- Seção das Variações de Cor (SKUs) -->
-        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm">
+        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs">
           <div class="flex justify-between items-center mb-4">
             <div>
               <h3 class="font-bold text-neutral-900">Variações / Cores (Lip Gloss SKUs)</h3>
@@ -439,7 +594,7 @@ class AlvaApp {
                 ${cost.variantCosts.map((v, idx) => `
                   <tr class="hover:bg-neutral-50/70 transition">
                     <td class="py-3 px-4 flex items-center gap-2.5">
-                      <div class="w-6 h-6 rounded-full border border-black/10 shadow-sm" style="background-color: ${v.colorCode}"></div>
+                      <div class="w-6 h-6 rounded-full border border-black/10 shadow-xs" style="background-color: ${v.colorCode}"></div>
                       <span class="font-bold text-neutral-900">${v.name}</span>
                     </td>
                     <td class="py-3 px-4 font-mono text-neutral-500">${v.sku}</td>
@@ -457,10 +612,9 @@ class AlvaApp {
           </div>
         </div>
 
-        <!-- Grid: BOM Detalhado + Custos Não Recorrentes de Setup -->
+        <!-- Grid: BOM Detalhado + Custos de Setup -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Coluna 1 & 2: BOM (Bill of Materials) -->
-          <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm">
+          <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs">
             <div class="flex justify-between items-center mb-4">
               <div>
                 <h3 class="font-bold text-neutral-900">Ficha Técnica Direta (BOM - Bill of Materials)</h3>
@@ -520,8 +674,8 @@ class AlvaApp {
             </div>
           </div>
 
-          <!-- Coluna 3: Custos Não Recorrentes de Setup (ANVISA, Testes, Clichês) -->
-          <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex flex-col justify-between">
+          <!-- Custos Não Recorrentes de Setup -->
+          <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-center mb-4">
                 <div>
@@ -551,7 +705,7 @@ class AlvaApp {
               </div>
             </div>
 
-            <!-- Resumo da Diluição do Setup -->
+            <!-- Resumo da Diluição -->
             <div class="mt-6 pt-4 border-t border-neutral-200 bg-rose-50/40 -mx-6 -mb-6 p-6 rounded-b-2xl">
               <div class="flex justify-between text-xs text-neutral-600 mb-1">
                 <span>Total Investimento Setup:</span>
@@ -571,7 +725,7 @@ class AlvaApp {
       </div>
     `;
 
-    // Eventos do BOM
+    // Event listeners do BOM
     document.getElementById("btn-update-batch")?.addEventListener("click", () => {
       const val = parseInt(document.getElementById("input-batch-size").value);
       if (val && val > 0) {
@@ -650,29 +804,28 @@ class AlvaApp {
     });
   }
 
-  // --- ABA 3: GESTÃO & COMPARATIVO DE FABRICANTES ---
+  // --- ABA 3: FORNECEDORES ---
   renderSuppliersTab(product, suppliers, cost) {
     const container = document.getElementById("panel-suppliers");
     if (!container) return;
 
     container.innerHTML = `
       <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs">
           <div>
             <h2 class="text-xl font-serif font-bold text-neutral-900">Seleção de Fabricantes & Terceiristas (OEM/ODM)</h2>
             <p class="text-sm text-neutral-500 mt-1">Comparativo de propostas comerciais considerando Lote Mínimo (MOQ), Custo Unitário, Prazos e Certificações ANVISA</p>
           </div>
-          <button id="btn-add-supplier" class="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-sm">
+          <button id="btn-add-supplier" class="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-xs">
             <i class="fas fa-plus"></i> Nova Cotação de Fornecedor
           </button>
         </div>
 
-        <!-- Cards de Fornecedores -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           ${suppliers.map(sup => `
-            <div class="bg-white rounded-2xl border ${sup.recommended ? "border-rose-400 ring-2 ring-rose-200/60" : "border-neutral-200"} p-6 shadow-sm flex flex-col justify-between relative">
+            <div class="bg-white rounded-2xl border ${sup.recommended ? "border-rose-400 ring-2 ring-rose-200/60" : "border-neutral-200"} p-6 shadow-xs flex flex-col justify-between relative">
               ${sup.recommended ? `
-                <div class="absolute -top-3 right-6 bg-gradient-to-r from-rose-700 to-rose-600 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                <div class="absolute -top-3 right-6 bg-gradient-to-r from-rose-700 to-rose-600 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-0.5 rounded-full shadow-xs flex items-center gap-1">
                   <i class="fas fa-star text-[9px]"></i> Mais Recomendado ALVA
                 </div>
               ` : ""}
@@ -774,14 +927,14 @@ class AlvaApp {
     });
   }
 
-  // --- ABA 4: SIMULADOR DE FORMAÇÃO DE PREÇO (PRICING) ---
+  // --- ABA 4: PRICING ---
   renderPricingTab(product, cost, pricing) {
     const container = document.getElementById("panel-pricing");
     if (!container) return;
 
     container.innerHTML = `
       <div class="space-y-6">
-        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h2 class="text-xl font-serif font-bold text-neutral-900">Formação de Preço & Análise de Margens (Pricing)</h2>
             <p class="text-sm text-neutral-500 mt-1">Simule o preço de venda e calcule a margem de contribuição real deduzindo impostos, gateways, comissões de canais e fretes</p>
@@ -792,12 +945,10 @@ class AlvaApp {
           </div>
         </div>
 
-        <!-- Canais de Venda -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           ${pricing.channels.map((ch, idx) => `
-            <div class="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm flex flex-col justify-between hover:border-neutral-300 transition">
+            <div class="bg-white rounded-2xl p-6 border border-neutral-200 shadow-xs flex flex-col justify-between hover:border-neutral-300 transition">
               <div>
-                <!-- Header do Canal -->
                 <div class="flex items-center justify-between pb-3 border-b border-neutral-100 mb-4">
                   <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700">
@@ -813,7 +964,6 @@ class AlvaApp {
                   </span>
                 </div>
 
-                <!-- Input de Preço de Venda -->
                 <div class="bg-neutral-50 p-4 rounded-xl mb-4 border border-neutral-200/60">
                   <label class="block text-xs font-semibold text-neutral-600 uppercase tracking-wider mb-1">Preço de Venda Sugerido (PVS)</label>
                   <div class="flex items-center gap-2">
@@ -824,7 +974,6 @@ class AlvaApp {
                   <div class="text-[11px] text-neutral-500 mt-1">Markup: <span class="font-bold text-neutral-800">${ch.markup.toFixed(2)}x</span> sobre o custo</div>
                 </div>
 
-                <!-- Demonstração da Margem Unitária (Cascata) -->
                 <div class="space-y-1.5 text-xs text-neutral-600 mb-4">
                   <div class="flex justify-between py-1">
                     <span>(-) Custo Mercadoria (CMV):</span>
@@ -859,7 +1008,6 @@ class AlvaApp {
                 </div>
               </div>
 
-              <!-- Margem de Contribuição Final -->
               <div class="bg-neutral-900 text-white p-4 rounded-xl mt-4">
                 <div class="flex justify-between items-center text-xs text-neutral-400 mb-1">
                   <span>Margem de Contribuição:</span>
@@ -886,7 +1034,7 @@ class AlvaApp {
     });
   }
 
-  // --- ABA 5: PROJEÇÕES & DRE GERENCIAL (FINANCIALS) ---
+  // --- ABA 5: PROJEÇÕES & DRE (FINANCIALS) ---
   renderFinancialsTab(product, cost, pricing, breakEven, dre) {
     const container = document.getElementById("panel-financials");
     if (!container) return;
@@ -899,8 +1047,7 @@ class AlvaApp {
 
     container.innerHTML = `
       <div class="space-y-6">
-        <!-- Topo: Seletor de Cenário e Ponto de Equilíbrio -->
-        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h2 class="text-xl font-serif font-bold text-neutral-900">Projeção de Vendas & DRE (12 Meses)</h2>
             <p class="text-sm text-neutral-500 mt-1">Acompanhe a curva de receitas, ponto de equilíbrio e tempo estimado de retorno (Payback)</p>
@@ -916,7 +1063,6 @@ class AlvaApp {
           </div>
         </div>
 
-        <!-- Indicadores de Retorno -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="bg-white p-5 rounded-2xl border border-neutral-200">
             <span class="text-xs text-neutral-500 uppercase tracking-wider font-medium">Unidades no Ano 1</span>
@@ -940,8 +1086,7 @@ class AlvaApp {
           </div>
         </div>
 
-        <!-- Gráfico de Evolução Financeira -->
-        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm">
+        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs">
           <h3 class="font-bold text-neutral-900 mb-1">Evolução Mensal: Receita vs Lucro Acumulado</h3>
           <p class="text-xs text-neutral-500 mb-4">A linha vermelha tracejada indica o ponto de retorno do capital investido (Break-Even)</p>
           <div class="h-80 relative">
@@ -949,8 +1094,7 @@ class AlvaApp {
           </div>
         </div>
 
-        <!-- Tabela DRE Completa -->
-        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm">
+        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs">
           <h3 class="font-bold text-neutral-900 mb-4">Demonstração de Resultado do Exercício Projetada (DRE)</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
@@ -1065,7 +1209,7 @@ class AlvaApp {
     });
   }
 
-  // --- ABA 6: COPILOT DE INTELIGÊNCIA ALVA ---
+  // --- ABA 6: COPILOT INTELIGENTE ---
   renderCopilotTab(product, insights, breakEven, pricing) {
     const container = document.getElementById("panel-copilot");
     if (!container) return;
@@ -1082,10 +1226,9 @@ class AlvaApp {
           </p>
         </div>
 
-        <!-- Lista de Diagnósticos e Recomendações -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           ${insights.map(item => `
-            <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex flex-col justify-between">
+            <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs flex flex-col justify-between">
               <div>
                 <div class="flex items-center gap-2 mb-3">
                   <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm ${
@@ -1111,8 +1254,8 @@ class AlvaApp {
           `).join("")}
         </div>
 
-        <!-- Checklist de Prontidão de Lançamento (Stage-Gate) -->
-        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm">
+        <!-- Checklist de Prontidão (Stage-Gate) -->
+        <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs">
           <h3 class="font-bold text-neutral-900 mb-2">Checklist de Prontidão ANVISA & Mercado</h3>
           <p class="text-xs text-neutral-500 mb-4">Etapas essenciais para o lançamento seguro do Lip Gloss de 3 cores</p>
 
@@ -1154,7 +1297,7 @@ class AlvaApp {
     `;
   }
 
-  // --- ADICIONAR NOVO PRODUTO DE BELEZA (+ NOVO PRODUTO) ---
+  // --- ADICIONAR NOVO PRODUTO ---
   openNewProductModal() {
     const name = prompt("Nome do novo produto de beleza (ex: ALVA Tint Balm, Sérum Hidratante):");
     if (!name) return;
@@ -1204,7 +1347,7 @@ class AlvaApp {
     alert(`Produto "${name}" cadastrado com sucesso no portfólio da ALVA!`);
   }
 
-  // --- EXPORTAR E IMPORTAR BACKUP JSON ---
+  // --- BACKUP JSON ---
   exportData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.state, null, 2));
     const downloadAnchor = document.createElement("a");

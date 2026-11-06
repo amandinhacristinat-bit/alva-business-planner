@@ -5,3 +5,4 @@ echo ========================================================
 echo Abrindo o sistema no seu navegador padrao...
 start "" "%~dp0index.html"
 exit
+
