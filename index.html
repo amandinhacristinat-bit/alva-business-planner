@@ -134,28 +134,57 @@
   <!-- ========================================== -->
   <div id="view-landing" class="flex-1">
     
-    <!-- Hero Section -->
-    <section class="relative overflow-hidden bg-gradient-to-b from-rose-50/50 via-white to-white py-16 sm:py-24 border-b border-rose-100/60">
+    <!-- Hero Section com Visual Editorial de Luxo -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-rose-50/70 via-white to-white py-16 sm:py-24 border-b border-rose-100/60">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="text-center max-w-3xl mx-auto">
-          <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-rose-100/70 text-rose-900 border border-rose-200 mb-6">
-            <i class="fas fa-certificate text-rose-600"></i> Cosméticos Limpos • Biotecnologia Labial • Cruelty-Free
-          </span>
-          <h1 class="text-4xl sm:text-6xl font-serif font-bold text-neutral-900 tracking-tight leading-tight">
-            A luminosidade pura em sua forma mais nobre.
-          </h1>
-          <p class="mt-6 text-base sm:text-lg text-neutral-600 leading-relaxed font-light">
-            A <strong>ALVA</strong> nasce para unir a sofisticação da alta perfumaria com o rigor dermatológico. Nosso primeiro lançamento traz uma trilogia de lip glosses com ácido hialurônico de alta permeação, textura ultraconfortável e sensorial espelhado sem grudar.
-          </p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-7 text-center lg:text-left">
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-900 border border-rose-200 mb-6">
+              <i class="fas fa-sparkles text-rose-600"></i> Cosméticos Limpos • Biotecnologia Labial • Cruelty-Free
+            </span>
+            <h1 class="text-4xl sm:text-6xl font-serif font-bold text-neutral-900 tracking-tight leading-tight">
+              A luminosidade pura em sua forma mais nobre.
+            </h1>
+            <p class="mt-6 text-base sm:text-lg text-neutral-600 leading-relaxed font-light max-w-2xl">
+              A <strong>ALVA</strong> nasce para unir a sofisticação da alta perfumaria com o rigor dermatológico. Da engenharia de cada gota de ácido hialurônico à transparência de custos industriais, criamos beleza com propósito e alta performance.
+            </p>
 
-          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#colecao-lipgloss" class="w-full sm:w-auto px-8 py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl text-sm font-semibold shadow-md transition flex items-center justify-center gap-2">
-              Conhecer a Coleção Triplo Glow <i class="fas fa-arrow-down text-xs"></i>
-            </a>
-            <button onclick="alvaApp.switchView('planner')" class="w-full sm:w-auto px-8 py-3.5 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-sm font-semibold shadow-md transition flex items-center justify-center gap-2">
-              <i class="fas fa-lock text-xs"></i> Acessar Portal de Gestão Interna
-            </button>
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <a href="#catalogo-completo" class="w-full sm:w-auto px-8 py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl text-xs font-bold uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
+                Explorar Coleção Completa (5 Produtos) <i class="fas fa-arrow-down text-xs"></i>
+              </a>
+              <button onclick="alvaApp.switchView('planner')" class="w-full sm:w-auto px-8 py-3.5 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-xs font-bold uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2">
+                <i class="fas fa-chart-pie text-xs"></i> Portal de Gestão & Finanças
+              </button>
+            </div>
           </div>
+
+          <!-- Hero Imagem de Cosméticos de Luxo -->
+          <div class="lg:col-span-5 relative">
+            <div class="relative mx-auto max-w-md lg:max-w-none">
+              <div class="rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-4/5 relative group">
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1000&q=80" 
+                     alt="ALVA Cosméticos Coleção Editorial" 
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/70 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+                  <span class="text-[11px] font-bold uppercase tracking-widest text-rose-300">Linha Editorial 2026</span>
+                  <p class="font-serif text-lg font-bold">ALVA Glaze & Skincare High-End</p>
+                  <span class="text-xs text-neutral-300">5 Produtos Desenvolvidos • Texturas Espelhadas & Glow Natural</span>
+                </div>
+              </div>
+              <div class="absolute -bottom-6 -left-6 bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-rose-100 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-lg">
+                  <i class="fas fa-droplet"></i>
+                </div>
+                <div>
+                  <span class="block text-xs font-bold text-neutral-900 leading-tight">Ácido Hialurônico 4D</span>
+                  <span class="block text-[10px] text-neutral-500">Volume & Hidratação 24h</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -163,80 +192,305 @@
       <div class="absolute top-1/2 -right-24 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none"></div>
     </section>
 
-    <!-- Apresentação do Lip Gloss: Trilogia 3 Cores -->
+    <!-- 1. VITRINE DO PRODUTO PILOTO: LIP GLOSS 3 CORES -->
     <section id="colecao-lipgloss" class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="text-xs font-bold tracking-widest text-rose-700 uppercase">Coleção de Estreia</span>
-        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-neutral-900 mt-2">ALVA Glaze — Trilogia de Cores</h2>
+        <span class="text-xs font-bold tracking-widest text-rose-700 uppercase">Produto Carro-Chefe</span>
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-neutral-900 mt-2">ALVA Glaze — Trilogia Lip Gloss Plump</h2>
         <p class="text-sm text-neutral-500 mt-3">
-          Três tonalidades estrategicamente desenvolvidas para atender desde o dia a dia minimalista até produções de alto impacto.
+          Três tonalidades estratégicas com fotos reais da textura e acabamento espelhado de longa durabilidade.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Cor 01 -->
-        <div class="bg-white rounded-3xl p-8 border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-          <div>
-            <div class="w-16 h-16 rounded-2xl shadow-inner border border-neutral-200 flex items-center justify-center mb-6 relative overflow-hidden" style="background-color: #F5E6E8">
-              <div class="w-8 h-8 rounded-full bg-white/70 blur-xs"></div>
+        <div class="bg-white rounded-3xl overflow-hidden border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div class="h-56 relative overflow-hidden bg-neutral-100">
+            <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=700&q=80" 
+                 alt="Cristal Glow #01" 
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-[10px] font-mono font-bold text-rose-900 border border-white">
+              ALVA-LG-01
             </div>
-            <span class="text-xs font-mono font-bold text-rose-800 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
-              SKU: ALVA-LG-01
-            </span>
-            <h3 class="text-2xl font-serif font-bold text-neutral-900 mt-3">Cristal Glow #01</h3>
-            <p class="text-xs text-neutral-400 font-medium mb-3">Aroma: Baunilha Nobre • 4.5 ml</p>
-            <p class="text-xs text-neutral-600 leading-relaxed">
-              O brilho diamante atemporal. Fórmula translúcida enriquecida com micropartículas refletoras peroladas que destacam o tom natural dos lábios com acabamento espelhado molhado.
-            </p>
+            <div class="absolute bottom-3 right-3 w-7 h-7 rounded-full shadow-md border-2 border-white" style="background-color: #F5E6E8"></div>
           </div>
-          <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
-            <span class="text-neutral-500">Efeito: <strong class="text-neutral-800">Luminosidade Pura</strong></span>
-            <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Efeito Plump</span>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="text-xl font-serif font-bold text-neutral-900">Cristal Glow #01</h3>
+              <p class="text-xs text-rose-700 font-medium mb-2">Aroma: Baunilha Nobre • 4.5 ml</p>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Brilho diamante translúcido com micropérolas refletoras que destacam o tom natural dos lábios com acabamento espelhado molhado.
+              </p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
+              <span class="text-neutral-500">Fatia do Lote: <strong class="text-neutral-900">30% (900 un)</strong></span>
+              <span class="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Plump Ativo</span>
+            </div>
           </div>
         </div>
 
         <!-- Cor 02 -->
-        <div class="bg-white rounded-3xl p-8 border-2 border-rose-300 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative group">
-          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-rose-700 text-white text-[10px] uppercase font-bold tracking-wider px-3.5 py-1 rounded-full shadow-sm">
-            Carro-Chefe Previsto (45% do Mix)
+        <div class="bg-white rounded-3xl overflow-hidden border-2 border-rose-300 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative group">
+          <div class="absolute top-3 right-3 z-10 bg-rose-700 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full shadow-sm">
+            Best-Seller (45% do Lote)
           </div>
-          <div>
-            <div class="w-16 h-16 rounded-2xl shadow-inner border border-neutral-200 flex items-center justify-center mb-6 relative overflow-hidden" style="background-color: #D98E85">
-              <div class="w-8 h-8 rounded-full bg-white/40 blur-xs"></div>
+          <div class="h-56 relative overflow-hidden bg-neutral-100">
+            <img src="https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=700&q=80" 
+                 alt="Nude Velvet #02" 
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-[10px] font-mono font-bold text-rose-900 border border-white">
+              ALVA-LG-02
             </div>
-            <span class="text-xs font-mono font-bold text-rose-800 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
-              SKU: ALVA-LG-02
-            </span>
-            <h3 class="text-2xl font-serif font-bold text-neutral-900 mt-3">Nude Velvet #02</h3>
-            <p class="text-xs text-neutral-400 font-medium mb-3">Aroma: Pêssego & Caramelo • 4.5 ml</p>
-            <p class="text-xs text-neutral-600 leading-relaxed">
-              O equilíbrio absoluto da sofisticação. Nude rosado quente com cobertura média, desenhado para harmonizar com todos os subtons de pele sem pesar.
-            </p>
+            <div class="absolute bottom-3 right-3 w-7 h-7 rounded-full shadow-md border-2 border-white" style="background-color: #D98E85"></div>
           </div>
-          <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
-            <span class="text-neutral-500">Efeito: <strong class="text-neutral-800">Cobertura Sofisticada</strong></span>
-            <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Best-seller</span>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="text-xl font-serif font-bold text-neutral-900">Nude Velvet #02</h3>
+              <p class="text-xs text-rose-700 font-medium mb-2">Aroma: Pêssego & Caramelo • 4.5 ml</p>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                Nude rosado quente sofisticado com cobertura média, desenhado para harmonizar com todos os subtons de pele sem pesar nem escorrer.
+              </p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
+              <span class="text-neutral-500">Fatia do Lote: <strong class="text-neutral-900">45% (1.350 un)</strong></span>
+              <span class="text-rose-700 font-bold bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">Carro-Chefe</span>
+            </div>
           </div>
         </div>
 
         <!-- Cor 03 -->
-        <div class="bg-white rounded-3xl p-8 border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-          <div>
-            <div class="w-16 h-16 rounded-2xl shadow-inner border border-neutral-200 flex items-center justify-center mb-6 relative overflow-hidden" style="background-color: #9B3855">
-              <div class="w-8 h-8 rounded-full bg-white/30 blur-xs"></div>
+        <div class="bg-white rounded-3xl overflow-hidden border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div class="h-56 relative overflow-hidden bg-neutral-100">
+            <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=700&q=80" 
+                 alt="Berry Bloom #03" 
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-[10px] font-mono font-bold text-rose-900 border border-white">
+              ALVA-LG-03
             </div>
-            <span class="text-xs font-mono font-bold text-rose-800 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
-              SKU: ALVA-LG-03
-            </span>
-            <h3 class="text-2xl font-serif font-bold text-neutral-900 mt-3">Berry Bloom #03</h3>
-            <p class="text-xs text-neutral-400 font-medium mb-3">Aroma: Frutas Vermelhas Silvestres • 4.5 ml</p>
-            <p class="text-xs text-neutral-600 leading-relaxed">
-              A elegância marcante do amora. Proporciona um efeito tint saudável, com pigmentos que se fundem aos lábios, conferindo profundidade e volume imediato.
+            <div class="absolute bottom-3 right-3 w-7 h-7 rounded-full shadow-md border-2 border-white" style="background-color: #9B3855"></div>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="text-xl font-serif font-bold text-neutral-900">Berry Bloom #03</h3>
+              <p class="text-xs text-rose-700 font-medium mb-2">Aroma: Frutas Vermelhas Silvestres • 4.5 ml</p>
+              <p class="text-xs text-neutral-600 leading-relaxed">
+                A elegância marcante do amora. Proporciona um efeito tint saudável, com pigmentos que se fundem aos lábios, conferindo profundidade e volume.
+              </p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
+              <span class="text-neutral-500">Fatia do Lote: <strong class="text-neutral-900">25% (750 un)</strong></span>
+              <span class="text-indigo-700 font-bold bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">Efeito Tint</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. NOVO: CATÁLOGO COMPLETO DE PRODUTOS ALVA (5 PRODUTOS) -->
+    <section id="catalogo-completo" class="py-16 sm:py-24 bg-neutral-100/60 border-y border-neutral-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
+          <div>
+            <span class="text-xs font-bold tracking-widest text-rose-700 uppercase">Portfólio Estratégico</span>
+            <h2 class="text-3xl sm:text-4xl font-serif font-bold text-neutral-900 mt-2">Coleção Completa ALVA (5 Produtos)</h2>
+            <p class="text-sm text-neutral-500 mt-2 max-w-xl">
+              Linha completa de cosméticos e skincare projetados para sinergia de ticket médio e recompra. Clique em qualquer produto para visualizar sua engenharia de custos e estudo financeiro.
             </p>
           </div>
-          <div class="mt-6 pt-4 border-t border-neutral-100 flex items-center justify-between text-xs">
-            <span class="text-neutral-500">Efeito: <strong class="text-neutral-800">Tint & Plump Intenso</strong></span>
-            <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Alta Pigmentação</span>
+          <button onclick="alvaApp.switchView('planner')" class="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-xs">
+            <i class="fas fa-sliders"></i> Gerenciar Todos no Planner
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Produto 1 -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+            <div class="h-60 relative overflow-hidden bg-neutral-100">
+              <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=700&q=80" 
+                   alt="Lip Gloss" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <span class="absolute top-3 left-3 bg-rose-950/80 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                Maquiagem Labial
+              </span>
+              <span class="absolute bottom-3 right-3 bg-white/95 text-neutral-900 text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                4.5 ml • 3 Cores
+              </span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="text-lg font-serif font-bold text-neutral-900">ALVA Glaze — Lip Gloss Plump</h3>
+                <p class="text-xs text-neutral-500 mt-1 mb-3">Com Ácido Hialurônico e Efeito Espelhado Não Pegajoso</p>
+                <div class="flex items-center gap-1.5 mb-4">
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #F5E6E8" title="Cristal Glow"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #D98E85" title="Nude Velvet"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #9B3855" title="Berry Bloom"></span>
+                  <span class="text-[11px] text-neutral-400 font-medium ml-1">3 variações</span>
+                </div>
+              </div>
+              <div class="pt-4 border-t border-neutral-100 flex items-center justify-between">
+                <div>
+                  <span class="block text-[10px] text-neutral-400 uppercase font-semibold">Preço Alvo D2C</span>
+                  <span class="text-base font-bold text-rose-900">R$ 59,90</span>
+                </div>
+                <button onclick="alvaApp.selectProductAndGo('prod-lipgloss-01')" class="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                  Ver Finanças <i class="fas fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 2 -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+            <div class="h-60 relative overflow-hidden bg-neutral-100">
+              <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=700&q=80" 
+                   alt="Blush Líquido" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <span class="absolute top-3 left-3 bg-neutral-900/80 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                Face & Glow
+              </span>
+              <span class="absolute bottom-3 right-3 bg-white/95 text-neutral-900 text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                12 ml • 3 Cores
+              </span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="text-lg font-serif font-bold text-neutral-900">ALVA Silk Veil — Blush Líquido</h3>
+                <p class="text-xs text-neutral-500 mt-1 mb-3">Enriquecido com Niacinamida 3% para Rubor Natural e Luminoso</p>
+                <div class="flex items-center gap-1.5 mb-4">
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #E8927C" title="Peach Satin"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #D46F84" title="Rose Petal"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #B5734C" title="Golden Bronze"></span>
+                  <span class="text-[11px] text-neutral-400 font-medium ml-1">3 variações</span>
+                </div>
+              </div>
+              <div class="pt-4 border-t border-neutral-100 flex items-center justify-between">
+                <div>
+                  <span class="block text-[10px] text-neutral-400 uppercase font-semibold">Preço Alvo D2C</span>
+                  <span class="text-base font-bold text-rose-900">R$ 69,90</span>
+                </div>
+                <button onclick="alvaApp.selectProductAndGo('prod-blush-02')" class="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                  Ver Finanças <i class="fas fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 3 -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+            <div class="h-60 relative overflow-hidden bg-neutral-100">
+              <img src="https://images.unsplash.com/photo-1608248597359-00f0119e0486?auto=format&fit=crop&w=700&q=80" 
+                   alt="Sérum Facial" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <span class="absolute top-3 left-3 bg-neutral-900/80 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                Skincare Facial
+              </span>
+              <span class="absolute bottom-3 right-3 bg-white/95 text-neutral-900 text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                30 ml • 2 Fórmulas
+              </span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="text-lg font-serif font-bold text-neutral-900">ALVA Cloud Drops — Sérum Multi-Ativo</h3>
+                <p class="text-xs text-neutral-500 mt-1 mb-3">Ácido Hialurônico 4D, Peptídeos e Centella Asiática Reparadora</p>
+                <div class="flex items-center gap-1.5 mb-4">
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #F3E8E2" title="Radiance"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #E2EBD8" title="Calm & Barrier"></span>
+                  <span class="text-[11px] text-neutral-400 font-medium ml-1">2 fórmulas</span>
+                </div>
+              </div>
+              <div class="pt-4 border-t border-neutral-100 flex items-center justify-between">
+                <div>
+                  <span class="block text-[10px] text-neutral-400 uppercase font-semibold">Preço Alvo D2C</span>
+                  <span class="text-base font-bold text-rose-900">R$ 89,90</span>
+                </div>
+                <button onclick="alvaApp.selectProductAndGo('prod-serum-03')" class="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                  Ver Finanças <i class="fas fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 4 -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+            <div class="h-60 relative overflow-hidden bg-neutral-100">
+              <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=700&q=80" 
+                   alt="Lip Tint Balm" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <span class="absolute top-3 left-3 bg-neutral-900/80 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                Cuidado Labial com Cor
+              </span>
+              <span class="absolute bottom-3 right-3 bg-white/95 text-neutral-900 text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                3.5 g • 3 Cores
+              </span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="text-lg font-serif font-bold text-neutral-900">ALVA Velvet Melt — Balm Tint</h3>
+                <p class="text-xs text-neutral-500 mt-1 mb-3">Esqualano Vegetal de Cana-de-Açúcar e Manteiga de Murumuru</p>
+                <div class="flex items-center gap-1.5 mb-4">
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #E07A8A" title="French Rose"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #BA7766" title="Toffee Nude"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #852738" title="Cherry Wine"></span>
+                  <span class="text-[11px] text-neutral-400 font-medium ml-1">3 variações</span>
+                </div>
+              </div>
+              <div class="pt-4 border-t border-neutral-100 flex items-center justify-between">
+                <div>
+                  <span class="block text-[10px] text-neutral-400 uppercase font-semibold">Preço Alvo D2C</span>
+                  <span class="text-base font-bold text-rose-900">R$ 49,90</span>
+                </div>
+                <button onclick="alvaApp.selectProductAndGo('prod-balm-04')" class="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                  Ver Finanças <i class="fas fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 5 -->
+          <div class="bg-white rounded-3xl overflow-hidden border border-neutral-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+            <div class="h-60 relative overflow-hidden bg-neutral-100">
+              <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=700&q=80" 
+                   alt="Bruma Fixadora" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <span class="absolute top-3 left-3 bg-neutral-900/80 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                Fixação & Preparação
+              </span>
+              <span class="absolute bottom-3 right-3 bg-white/95 text-neutral-900 text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                100 ml • 2 Acabamentos
+              </span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="text-lg font-serif font-bold text-neutral-900">ALVA Lumina Mist — Bruma Fixadora</h3>
+                <p class="text-xs text-neutral-500 mt-1 mb-3">Névoa Ultrafina de 16h com Água de Rosas, Pantenol e Efeito Glow</p>
+                <div class="flex items-center gap-1.5 mb-4">
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #F7F0EB" title="Dewy Glow"></span>
+                  <span class="w-3.5 h-3.5 rounded-full border border-black/10 shadow-xs" style="background-color: #EFEAE6" title="Velvet Soft"></span>
+                  <span class="text-[11px] text-neutral-400 font-medium ml-1">2 acabamentos</span>
+                </div>
+              </div>
+              <div class="pt-4 border-t border-neutral-100 flex items-center justify-between">
+                <div>
+                  <span class="block text-[10px] text-neutral-400 uppercase font-semibold">Preço Alvo D2C</span>
+                  <span class="text-base font-bold text-rose-900">R$ 64,90</span>
+                </div>
+                <button onclick="alvaApp.selectProductAndGo('prod-mist-05')" class="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                  Ver Finanças <i class="fas fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card de Expansão / Novo Produto -->
+          <div class="bg-gradient-to-br from-rose-950 to-neutral-900 rounded-3xl p-8 text-white shadow-md flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-rose-300 text-xl mb-6">
+                <i class="fas fa-plus"></i>
+              </div>
+              <span class="text-[11px] font-bold uppercase tracking-widest text-rose-300">Expansão de P&D</span>
+              <h3 class="text-2xl font-serif font-bold text-white mt-1">Próximo Lançamento?</h3>
+              <p class="text-xs text-neutral-300 mt-3 leading-relaxed">
+                Adicione novos cosméticos (ex: iluminador em bastão, máscara de cílios, óleo demaquilante) e simule custos e lucros em segundos.
+              </p>
+            </div>
+            <button onclick="alvaApp.openNewProductModal()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 mt-6">
+              <i class="fas fa-wand-magic-sparkles"></i> Simular Novo Cosmético
+            </button>
           </div>
         </div>
       </div>

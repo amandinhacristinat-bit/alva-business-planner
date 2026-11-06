@@ -20,7 +20,16 @@ class AlvaApp {
     try {
       const saved = localStorage.getItem(this.storageKey);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Garante que todos os 5 produtos padrões estejam disponíveis
+        if (parsed.products && parsed.products.length < ALVA_DEFAULT_DATA.products.length) {
+          ALVA_DEFAULT_DATA.products.forEach(defaultProd => {
+            if (!parsed.products.some(p => p.id === defaultProd.id)) {
+              parsed.products.push(JSON.parse(JSON.stringify(defaultProd)));
+            }
+          });
+        }
+        return parsed;
       }
     } catch (e) {
       console.warn("Erro ao carregar estado local:", e);
@@ -369,6 +378,18 @@ class AlvaApp {
     }
   }
 
+  // Seleciona um produto a partir da vitrine pública e abre no Planner
+  selectProductAndGo(productId) {
+    this.selectedProductId = productId;
+    if (!this.currentUser) {
+      const staffList = this.state.staff || ALVA_DEFAULT_DATA.staff;
+      this.saveUser(staffList[0]);
+    }
+    this.switchView("planner");
+    this.render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   switchTab(tab) {
     this.currentTab = tab;
     document.querySelectorAll("[data-nav-tab]").forEach(btn => {
@@ -459,6 +480,25 @@ class AlvaApp {
     if (!container) return;
 
     container.innerHTML = `
+      <!-- Banner com Foto do Produto Ativo -->
+      <div class="bg-white rounded-3xl p-6 border border-neutral-200/80 shadow-xs mb-6 flex flex-col md:flex-row items-center gap-6">
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 shadow-md border-2 border-rose-100 bg-neutral-100">
+          <img src="${product.image || 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=400&q=80'}" class="w-full h-full object-cover" alt="${product.name}" />
+        </div>
+        <div class="flex-1 text-center md:text-left">
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1.5">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
+              ${product.category} • ${product.volume}
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+              Status: ${product.status}
+            </span>
+          </div>
+          <h2 class="text-2xl font-serif font-bold text-neutral-900">${product.name}</h2>
+          <p class="text-xs text-neutral-500 mt-1 max-w-2xl">${product.description}</p>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- Card 1: Custo Unitário -->
         <div class="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-xs hover:shadow-md transition">
@@ -518,34 +558,42 @@ class AlvaApp {
         </div>
       </div>
 
-      <!-- Seção das 3 Cores do Lip Gloss -->
+      <!-- Seção das Variações do Produto Ativo -->
       <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs mb-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
           <div>
-            <h3 class="text-lg font-serif font-bold text-neutral-900">Coleção Inicial: Lip Gloss 3 Tons</h3>
-            <p class="text-sm text-neutral-500">Distribuição planejada de volume e acabamento para o primeiro lote (${cost.plannedBatch} un)</p>
+            <h3 class="text-lg font-serif font-bold text-neutral-900">Variações & Linha de Produção (${cost.variantCosts.length} SKUs)</h3>
+            <p class="text-sm text-neutral-500">Distribuição planejada de volume, custos diretos e acabamentos para o lote (${cost.plannedBatch} un)</p>
           </div>
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
-            <i class="fas fa-sparkles text-rose-500"></i> Coleção Triplo Glow
+            <i class="fas fa-layer-group text-rose-500"></i> ${product.category}
           </span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           ${cost.variantCosts.map(v => `
-            <div class="border border-neutral-200 rounded-xl p-4 relative overflow-hidden bg-gradient-to-b from-white to-neutral-50/50 hover:border-neutral-300 transition">
-              <div class="flex items-center gap-3 mb-3">
-                <div class="w-9 h-9 rounded-full shadow-inner border border-black/10 flex items-center justify-center" style="background-color: ${v.colorCode}">
-                  <div class="w-3 h-3 rounded-full bg-white/40 blur-[1px]"></div>
+            <div class="border border-neutral-200 rounded-2xl p-4 relative overflow-hidden bg-gradient-to-b from-white to-neutral-50/50 hover:border-neutral-300 transition flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-3 mb-3">
+                  ${v.image ? `
+                    <div class="w-12 h-12 rounded-xl overflow-hidden shadow-xs border border-neutral-200 shrink-0 bg-neutral-100">
+                      <img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}" />
+                    </div>
+                  ` : `
+                    <div class="w-10 h-10 rounded-full shadow-inner border border-black/10 flex items-center justify-center shrink-0" style="background-color: ${v.colorCode}">
+                      <div class="w-3 h-3 rounded-full bg-white/40 blur-[1px]"></div>
+                    </div>
+                  `}
+                  <div>
+                    <h4 class="font-bold text-neutral-900 text-sm leading-tight">${v.name}</h4>
+                    <span class="text-xs text-neutral-500 font-mono">${v.sku}</span>
+                  </div>
                 </div>
-                <div>
-                  <h4 class="font-bold text-neutral-900 text-sm leading-tight">${v.name}</h4>
-                  <span class="text-xs text-neutral-500 font-mono">${v.sku}</span>
-                </div>
+
+                <p class="text-xs text-neutral-600 mb-3 min-h-[32px]">${v.finish}</p>
               </div>
 
-              <p class="text-xs text-neutral-600 mb-3 min-h-[32px]">${v.finish}</p>
-
-              <div class="bg-white rounded-lg p-3 border border-neutral-100 space-y-1.5 text-xs">
+              <div class="bg-white rounded-lg p-3 border border-neutral-100 space-y-1.5 text-xs mt-2">
                 <div class="flex justify-between text-neutral-600">
                   <span>Volume planejado:</span>
                   <span class="font-bold text-neutral-900">${v.totalUnits} un (${v.shareOfBatch}%)</span>
@@ -559,7 +607,7 @@ class AlvaApp {
                   <span class="font-bold text-rose-900">R$ ${v.unitCost.toFixed(2)}</span>
                 </div>
                 <div class="flex justify-between text-neutral-600">
-                  <span>Investimento nesta cor:</span>
+                  <span>Investimento nesta variação:</span>
                   <span class="font-bold text-neutral-800">R$ ${v.totalInvestment.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                 </div>
               </div>
@@ -670,15 +718,20 @@ class AlvaApp {
       <div class="space-y-6">
         <!-- Cabeçalho do Produto e Ajuste de Lote -->
         <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <div class="flex items-center gap-2 mb-1">
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
-                ${product.category} • ${product.volume}
-              </span>
-              <span class="text-xs text-neutral-400">ID: ${product.id}</span>
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-xl overflow-hidden shadow-xs border border-rose-100 shrink-0 bg-neutral-100">
+              <img src="${product.image || 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=400&q=80'}" class="w-full h-full object-cover" alt="${product.name}" />
             </div>
-            <h2 class="text-xl font-serif font-bold text-neutral-900">${product.name}</h2>
-            <p class="text-sm text-neutral-500 mt-1">${product.description}</p>
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
+                  ${product.category} • ${product.volume}
+                </span>
+                <span class="text-xs text-neutral-400">ID: ${product.id}</span>
+              </div>
+              <h2 class="text-xl font-serif font-bold text-neutral-900">${product.name}</h2>
+              <p class="text-xs text-neutral-500 mt-0.5">${product.description}</p>
+            </div>
           </div>
 
           <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-3.5 flex items-center gap-4">
@@ -700,8 +753,8 @@ class AlvaApp {
         <div class="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-xs">
           <div class="flex justify-between items-center mb-4">
             <div>
-              <h3 class="font-bold text-neutral-900">Variações / Cores (Lip Gloss SKUs)</h3>
-              <p class="text-xs text-neutral-500">Definição das 3 cores com custo adicional de pigmento e fatia de produção</p>
+              <h3 class="font-bold text-neutral-900">Variações & SKUs de Produção</h3>
+              <p class="text-xs text-neutral-500">Divisão do lote entre as ${cost.variantCosts.length} variações com custo de pigmentação e matéria-prima</p>
             </div>
           </div>
 
@@ -722,7 +775,13 @@ class AlvaApp {
                 ${cost.variantCosts.map((v, idx) => `
                   <tr class="hover:bg-neutral-50/70 transition">
                     <td class="py-3 px-4 flex items-center gap-2.5">
-                      <div class="w-6 h-6 rounded-full border border-black/10 shadow-xs" style="background-color: ${v.colorCode}"></div>
+                      ${v.image ? `
+                        <div class="w-7 h-7 rounded-lg overflow-hidden border border-neutral-200 shrink-0 bg-neutral-100 shadow-2xs">
+                          <img src="${v.image}" class="w-full h-full object-cover" alt="${v.name}" />
+                        </div>
+                      ` : `
+                        <div class="w-6 h-6 rounded-full border border-black/10 shadow-xs shrink-0" style="background-color: ${v.colorCode}"></div>
+                      `}
                       <span class="font-bold text-neutral-900">${v.name}</span>
                     </td>
                     <td class="py-3 px-4 font-mono text-neutral-500">${v.sku}</td>
